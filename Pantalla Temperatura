@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:invernadero/PantallaDos.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+class PantallaTemperatura extends StatefulWidget {
+
+  PantallaTemperatura(int index);
+  PantallaTemperatura(int index);
+
+  @override
+  _PantallaTemperaturaState createState() => _PantallaTemperaturaState();
+}
+
+class _PantallaTemperaturaState extends State<PantallaTemperatura> {
+  final DatabaseReference _temperaturaRef = FirebaseDatabase.instance.reference().child('temperatura');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Temperatura en Tiempo Real'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+
+          Image.asset(
+            'assets/temperatura.jpg',
+            width: 200,
+            height: 200,
+          ),
+          SizedBox(height: 20),
+          // Mostrar temperatura en tiempo real desde Firebase
+          StreamBuilder(
+            stream: _temperaturaRef.onValue,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data.snapshot.value != null) {
+                // Obtener el valor de temperatura desde Firebase
+                double temperatura = snapshot.data.snapshot.value.toDouble();
+                return Text(
+                  'Temperatura: $temperatura °C',
+                  style: TextStyle(fontSize: 24),
+                );
+              } else {
+                return Text('Cargando temperatura...');
+              }
+            },
+          ),
+          SizedBox(height: 20),
+          // Botón para regresar a la Pantalla 2
+          ElevatedButton(
+            onPressed: () {
+              // Regresar a la Pantalla 2 no se como
+              Navigator.pop(context);
+            },
+            child: Text('Regresar a Estado en Tiempo Real'),
+          ),
+        ],
+      ),
+    );
+  }
+}
