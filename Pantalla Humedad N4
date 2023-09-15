@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+class PantallaHumedad extends StatefulWidget {
+  @override
+  _PantallaHumedadState createState() => _PantallaHumedadState();
+}
+
+class _PantallaHumedadState extends State<PantallaHumedad> {
+  final DatabaseReference _humedadRef = FirebaseDatabase.instance.reference().child('humedad');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Humedad en Tiempo Real'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+
+          Image.asset(
+            'assets/humedad.jpg',
+            width: 200,
+            height: 200,
+          ),
+
+
+          SizedBox(height: 20),
+          // Mostrar la humedad en tiempo real desde Firebase
+          StreamBuilder(
+            stream: _humedadRef.onValue,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data.snapshot.value != null) {
+                // Obtener el valor de humedad desde Firebase
+                double humedad = snapshot.data.snapshot.value.toDouble();
+                return Text(
+                  'Humedad: $humedad %',
+                  style: TextStyle(fontSize: 24),
+                );
+              } else {
+                return Text('Cargando humedad...');
+              }
+            },
+          ),
+          SizedBox(height: 20),
+          // Botón para regresar a la Pantalla 2
+          ElevatedButton(
+            onPressed: () {
+              // Regresar a la Pantalla 2
+              Navigator.pop(context);
+            },
+            child: Text('Regresar a Estado en Tiempo Real'),
+          ),
+        ],
+      ),
+    );
+  }
+}
