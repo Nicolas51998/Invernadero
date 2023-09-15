@@ -1,0 +1,57 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+class PantallaNivelAgua extends StatefulWidget {
+  @override
+  _PantallaNivelAguaState createState() => _PantallaNivelAguaState();
+}
+
+class _PantallaNivelAguaState extends State<PantallaNivelAgua> {
+  final DatabaseReference _nivelAguaRef = FirebaseDatabase.instance.reference().child('nivel_agua');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Nivel del Agua en Tiempo Real'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          // Imagen desde "assets"
+          Image.asset(
+            'assets/niveljpg',
+            width: 200,
+            height: 200,
+          ),
+          SizedBox(height: 20),
+          // Mostrar nivel del agua en tiempo real desde Firebase
+          StreamBuilder(
+            stream: _nivelAguaRef.onValue,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data.snapshot.value != null) {
+                // Obtener el valor del nivel del agua desde Firebase
+                double nivelAgua = snapshot.data.snapshot.value.toDouble();
+                return Text(
+                  'Nivel del Agua: $nivelAgua cm',
+                  style: TextStyle(fontSize: 24),
+                );
+              } else {
+                return Text('Cargando nivel del agua...');
+              }
+            },
+          ),
+          SizedBox(height: 20),
+          // Botón para regresar a la Pantalla 2
+          ElevatedButton(
+            onPressed: () {
+              // Regresar a la Pantalla 2
+              Navigator.pop(context);
+            },
+            child: Text('Regresar a Estado en Tiempo Real'),
+          ),
+        ],
+      ),
+    );
+  }
+}
