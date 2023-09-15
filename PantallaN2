@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:invernadero/PantallaTemp.dart';
+
+
+class PantallaEstadoReal extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Estado en Tiempo Real'),
+      ),
+      body: ListView.builder(
+        itemCount: 3, // las variables que tengo (temperatura, humedad, nivel del agua)
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_getVariableName(index)), // Nombre de la variable
+            trailing: ElevatedButton(
+              onPressed: () {
+                // N
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PantallaTemperatura(index)),
+                );
+              },
+              child: Text('Detalles'),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  String _getVariableName(int index) {
+    switch (index) {
+      case 0:
+        return 'Temperatura';
+      case 1:
+        return 'Humedad';
+      case 2:
+        return 'Nivel del Agua';
+      default:
+        return '';
+    }
+  }
+}
